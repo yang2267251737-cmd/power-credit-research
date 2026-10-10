@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>电力发行人信用研究库</title>
+<style>
+:root{--bg:#f3f5f7;--ink:#152d3a;--muted:#607680;--line:#dce4e8;--teal:#087f83;--blue:#4676ae;--orange:#b46c38}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 system-ui,"Microsoft YaHei",sans-serif}main{max-width:1280px;margin:auto;padding:38px 28px}h1{font-size:32px;line-height:1.3;margin:6px 0 12px;letter-spacing:-.6px}h2{font-size:19px;margin:0 0 14px}p{margin:8px 0}.eyebrow{color:var(--teal);font-size:12px;font-weight:700;letter-spacing:2px}.muted{color:var(--muted)}.top{display:flex;justify-content:space-between;gap:24px;align-items:start}.badge{background:#e2efef;color:#116569;padding:6px 12px;border-radius:20px;font-size:12px;white-space:nowrap}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin:24px 0}.stat,.panel{background:white;border:1px solid var(--line);border-radius:14px;padding:21px}.stat b{display:block;font-size:27px;line-height:1.4}.stat span{color:var(--muted);font-size:13px}.toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:20px 0}select,input{font:inherit;padding:8px 11px;border:1px solid #c7d5dc;border-radius:8px;background:white;color:var(--ink)}input{min-width:220px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.panel{margin-bottom:18px}.notice{background:#f7fafb;border-left:3px solid var(--teal);padding:12px 15px;font-size:13px;color:#4d6673;margin:15px 0}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:13px;white-space:nowrap}th,td{text-align:right;padding:12px;border-bottom:1px solid #e8eef1}th{font-weight:600;background:#f6f9fa}th:first-child,td:first-child{text-align:left}.name{font-weight:700}.small{font-size:12px}.row{margin:18px 0}.row-name{display:flex;justify-content:space-between;font-size:13px}.track{height:12px;background:#eaf0f2;border-radius:8px;margin-top:7px;overflow:hidden}.fill{height:100%;border-radius:8px}.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}a{color:#087b80;text-decoration:none}a:hover{text-decoration:underline}.notes{padding-left:20px;color:#516c79;font-size:13px}.notes li{margin:7px 0}.foot{font-size:12px;color:var(--muted);margin:20px 0}.fact-note{white-space:normal;min-width:240px;max-width:360px;text-align:left}.controls{display:flex;gap:12px;flex-wrap:wrap}.status{color:#386e71}.research-card{border-top:1px solid var(--line);padding:15px 0}.research-card:first-child{border:0}details summary{cursor:pointer;color:var(--teal)}@media(max-width:850px){main{padding:24px 16px}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.top{flex-direction:column}h1{font-size:26px}}
+</style>
+<style>th{white-space:normal;max-width:230px}#comparison th:first-child{min-width:100px}</style>
+</head>
+<body><main>
+<div class="top"><div><div class="eyebrow">POWER CREDIT RESEARCH / v0.1</div><h1>电力发行人 · 偿债能力比较</h1><p class="muted">从原始披露到财务指标，让每一个数字都能回到证据。</p></div><span class="badge">历史年度数据 · 研究初版</span></div>
+<div class="stats"><div class="stat"><b id="issuerCount"></b><span>上市公司发行人</span></div><div class="stat"><b id="factCount"></b><span>附页码的原始事实</span></div><div class="stat"><b>2025 / 2024</b><span>本期与比较期</span></div><div class="stat"><b>CSV + SQLite</b><span>可复现研究数据</span></div></div>
+<div class="toolbar"><label for="period">报告期</label><select id="period"><option value="2025-12-31">2025 年末 / 全年</option><option value="2024-12-31">2024 年末 / 全年比较数</option></select><span class="small muted">金额展示为亿元；比率按统一单位计算。</span></div>
+<div class="notice">财务报表统一采用发行人合并口径。有息债务采用年报债券章节披露值；2024 年债务口径待核对，相关比率留空。华电国际 2024 年报表比较数已重述。本页不生成评级或综合信用排名。</div>
+<section class="panel"><h2>偿债能力与现金流</h2><div class="table-wrap"><table id="comparison"></table></div><p class="small muted">短债指一年以内到期有息债务；经营现金流为全年流量。各比率只能提供研究线索，需结合再融资、母公司现金流与业务结构分析。</p></section>
+<div class="grid"><section class="panel"><h2>现金对短债的覆盖</h2><div class="legend"><span><i class="dot" style="background:var(--teal)"></i>货币资金 / 短债</span><span><i class="dot" style="background:var(--blue)"></i>扣披露受限资金后 / 短债</span></div><div id="liquidity"></div><p class="small muted">扣减结果为现金代理指标；境外汇回限制、集团内部资金可调拨性与限制项重叠仍需核验。</p></section><section class="panel"><h2>现金流情景分析</h2><p class="small muted">假设经营现金流下降 20%，购建支出增加 10%。单位：亿元。</p><div class="table-wrap"><table id="stress"></table></div><p class="small muted">展示经营现金流减购建支出的变化，未加入利息、分红、融资与其他投资收支；不等于偿债缺口预测。</p></section></div>
+<section class="panel"><h2>研究关注点</h2><div id="research"></div></section>
+<section class="panel"><h2>原始数据与证据</h2><div class="controls"><label>发行人 <select id="issuer"><option value="all">全部</option></select></label><label>字段筛选 <input id="search" placeholder="如：受限、经营现金流、debt"></label></div><p class="small muted">页码链接使用 PDF 文件页序，表内另列报告印刷页码。核验状态：AI 已核对，等待你的独立复核。</p><div class="table-wrap"><table id="facts"></table></div></section>
+<section class="panel"><h2>口径与资料缺口</h2><ul class="notes"><li>“经营现金流减购建支出”为本项目定义的现金流代理指标，未覆盖全部投资收支和融资收支。</li><li>权益列报永续债不会自动计入披露的有息债务；100%重分类情景只展示杠杆敏感性。</li><li>各发行人的债务定义与四舍五入精度可能不同，需进一步与附注、评级报告核对。</li><li>尚待补齐：2023 年数据、母公司口径、债务类别明细、银行授信实际可用额度、评级依据和再融资事件。初版未接入个券估值。</li><li>本期与比较期数据均来自 2025 年报告，属于报告比较口径；其中华电国际已重述，不可直接用于历史时点回测。</li></ul></section>
+<p class="foot">资料核查日期：2026-10-10。公开披露来源可逐条追溯；本页面为历史财务研究快照。</p>
+</main><script id="researchData" type="application/json">__DATA__</script><script>
+const D=JSON.parse(document.getElementById('researchData').textContent);
+const colors={HPI:'#087f83',HDPI:'#4676ae',DT:'#b46c38'};
+const names=Object.fromEntries(D.issuers.map(x=>[x.issuer_id,x.short_name]));
+const sources=Object.fromEntries(D.sources.map(x=>[x.source_id,x]));
+const scales={CNY:.001,CNY_1000:1,CNY_100M:100000};
+const basisLabels={current_year:'本期',restated_comparative:'已重述比较数',report_comparative:'报告比较数'};
+const unitLabels={CNY:'元',CNY_1000:'千元',CNY_100M:'亿元'};
+const escapeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const format=(v,type='multiple')=>v===null||v===undefined?'待补充':type==='percent'?(Number(v)*100).toFixed(2)+'%':type==='amount'?(Number(v)/100000).toFixed(2):Number(v).toFixed(3)+'x';
+document.getElementById('issuerCount').textContent=D.issuers.length;
+document.getElementById('factCount').textContent=D.facts.length;
+document.getElementById('issuer').innerHTML+=D.issuers.map(x=>`<option value="${x.issuer_id}">${escapeHtml(x.short_name)}</option>`).join('');
+function render(){
+ const period=document.getElementById('period').value;
+ const rows=D.comparison.filter(x=>x.period_end===period);
+ const columns=['liabilities_assets','adjusted_cash_short_debt','ocf_debt','short_debt_share','ocf_after_cash_capex'];
+ document.getElementById('comparison').innerHTML='<thead><tr><th>发行人</th>'+columns.map(k=>`<th>${escapeHtml(D.derived_labels[k][0])}</th>`).join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr><td class="name">'+names[r.issuer_id]+'</td>'+columns.map(k=>`<td>${format(r.metrics[k],D.derived_labels[k][1])}</td>`).join('')+'</tr>').join('')+'</tbody>';
+ const maximum=Math.max(.3,...rows.flatMap(r=>[Number(r.metrics.cash_short_debt||0),Number(r.metrics.adjusted_cash_short_debt||0)]));
+ document.getElementById('liquidity').innerHTML=rows.map(r=>'<div class="row"><div class="row-name"><b>'+names[r.issuer_id]+'</b><span>'+format(r.metrics.cash_short_debt)+' / '+format(r.metrics.adjusted_cash_short_debt)+'</span></div>'+['cash_short_debt','adjusted_cash_short_debt'].map((k,i)=>`<div class="track"><div class="fill" style="width:${Math.max(0,Number(r.metrics[k]||0))/maximum*100}%;background:${i?'var(--blue)':'var(--teal)'}"></div></div>`).join('')+'</div>').join('');
+ document.getElementById('stress').innerHTML='<thead><tr><th>发行人</th><th>原始现金流代理</th><th>冲击后现金流代理</th></tr></thead><tbody>'+rows.map(r=>`<tr><td>${names[r.issuer_id]}</td><td>${format(r.metrics.ocf_after_cash_capex,'amount')}</td><td>${format(r.metrics.stress_ocf_after_cash_capex,'amount')}</td></tr>`).join('')+'</tbody>';
+ const research={HPI:'境外资金汇回限制与披露的受限货币资金是否重叠？财务公司存款是否可以直接用于发行人偿债？',HDPI:'合并范围变化和比较数重述，分别影响了哪些现金流与债务指标？发行人母公司对成员企业资金的调拨能力如何？',DT:'权益列报永续债占比如何影响杠杆判断？披露债务精度为整亿元，如何与财报和评级债务口径核对？'};
+ document.getElementById('research').innerHTML=D.issuers.map(i=>`<div class="research-card"><b style="color:${colors[i.issuer_id]}">${escapeHtml(i.short_name)}</b><p class="small muted">${escapeHtml(research[i.issuer_id])}</p><details><summary>查看永续债敏感性指标</summary><p class="small">100%重分类情景杠杆率：${format(rows.find(r=>r.issuer_id===i.issuer_id).metrics.perpetual_reclass_leverage,'percent')}。非评级机构调整结果。</p></details></div>`).join('');
+ renderFacts();
+}
+function renderFacts(){
+ const period=document.getElementById('period').value,issuer=document.getElementById('issuer').value,q=document.getElementById('search').value.toLowerCase();
+ const facts=D.facts.filter(f=>f.period_end===period&&(issuer==='all'||issuer===f.issuer_id)&&((D.metric_labels[f.metric]||'')+' '+f.metric).toLowerCase().includes(q));
+ document.getElementById('facts').innerHTML='<thead><tr><th>发行人 / 字段</th><th>数值（亿元）</th><th>原始数值 / 单位</th><th>PDF / 印刷页</th><th>期间口径</th><th>说明</th></tr></thead><tbody>'+facts.map(f=>`<tr><td>${escapeHtml(names[f.issuer_id])}<br>${escapeHtml(D.metric_labels[f.metric])}</td><td>${f.unit==='CNY_100M'?escapeHtml(f.value):(Number(f.value)*scales[f.unit]/100000).toFixed(3)}</td><td>${Number(f.value).toLocaleString('zh-CN',{maximumFractionDigits:3})} ${unitLabels[f.unit]}</td><td><a target="_blank" rel="noopener" href="${escapeHtml(sources[f.source_id].url)}#page=${f.pdf_page}">${f.pdf_page} / ${f.report_page}</a></td><td>${escapeHtml(basisLabels[f.basis]||f.basis)}</td><td class="fact-note">${escapeHtml(f.note||f.section)}</td></tr>`).join('')+'</tbody>';
+}
+document.getElementById('period').addEventListener('change',render);
+document.getElementById('issuer').addEventListener('change',renderFacts);
+document.getElementById('search').addEventListener('input',renderFacts);
+render();
+</script></body></html>
