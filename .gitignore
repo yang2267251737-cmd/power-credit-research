@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.env.*
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*.sqlite
+tmp/
+.DS_Store
