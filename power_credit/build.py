@@ -162,14 +162,92 @@ def validate_debt_breakdown(rows, facts, exceptions=()):
     if set(known)!=matched:
         raise ValueError('Stale evidence exception')
 
+def validate_income_evidence(rows, facts, sources):
+    """Keep accrual income separate from cash receipts; no assumed cash bridge."""
+    source_map = {s['source_id']: s for s in sources}
+    groups = defaultdict(list)
+    seen = set()
+    for row in rows:
+        key = tuple(row[k] for k in ['issuer_id', 'period_end', 'scope', 'report_vintage'])
+        record_key = key + (row['component'],)
+        if record_key in seen:
+            raise ValueError('Duplicate investment income evidence')
+        seen.add(record_key)
+        source = source_map.get(row['source_id'])
+        if source is None or source['issuer_id'] != row['issuer_id'] or row['report_vintage'] != row['source_id'].split('_')[1]:
+            raise ValueError('Investment income source mismatch')
+        if row['scope'] != 'parent' or row['currency'] != 'CNY' or row['review_status'] not in ['agent_verified', 'user_verified']:
+            raise ValueError('Invalid investment income evidence')
+        if int(row['pdf_page']) < 1 or int(row['report_page']) < 1:
+            raise ValueError('Missing investment income page')
+        date.fromisoformat(row['period_end'])
+        if row['period_end'] > source['publication_date']:
+            raise ValueError('Investment income period after publication')
+        if row['measurement_basis'] not in ['accounting_income', 'cash_flow'] or row['role'] not in ['component', 'total']:
+            raise ValueError('Invalid investment income basis/role')
+        groups[key].append(row)
+    result = []
+    for key, items in groups.items():
+        accounting = [r for r in items if r['measurement_basis'] == 'accounting_income']
+        totals = [r for r in accounting if r['role'] == 'total']
+        cash = [r for r in items if r['measurement_basis'] == 'cash_flow']
+        if len(totals) != 1 or len(cash) != 1 or cash[0]['role'] != 'total':
+            raise ValueError('Income table requires separate accounting and cash totals')
+        total = normalize(totals[0]['value'], totals[0]['unit'])
+        components = sum((normalize(r['value'], r['unit']) for r in accounting if r['role'] == 'component'), Decimal(0))
+        if total != components:
+            raise ValueError('Accounting income components do not reconcile')
+        fact = next((f for f in facts if tuple(f[k] for k in ['issuer_id', 'period_end', 'scope', 'report_vintage']) == key and f['metric'] == 'investment_income_cash'), None)
+        receipts = normalize(cash[0]['value'], cash[0]['unit'])
+        if fact is None or fact['source_id'] != cash[0]['source_id'] or normalize(fact['value'], fact['unit']) != receipts:
+            raise ValueError('Investment cash evidence/fact mismatch')
+        result.append(dict(zip(['issuer_id', 'period_end', 'scope', 'report_vintage'], key),
+            accounting_income_cny_1000=str(total), investment_cash_cny_1000=str(receipts),
+            cash_minus_accounting_cny_1000=str(receipts-total), bridge_status='cash_bridge_pending'))
+    return result
+
+def validate_review_log(reviews, facts, income, issues):
+    """A user-reviewed label needs a matching human feedback record."""
+    index = {}
+    key_fields = ['issuer_id', 'period_end', 'scope', 'report_vintage']
+    for kind, records, id_field, value_field in [('fact', facts, 'metric', 'value'),
+            ('income', income, 'component', 'value'), ('issue', issues, 'issue_id', 'expected_delta')]:
+        for row in records:
+            index[(kind, row[id_field], *(row[k] for k in key_fields), value_field)] = row
+    seen, confirmed = set(), set()
+    for review in reviews:
+        if review['review_id'] in seen:
+            raise ValueError('Duplicate review identifier')
+        seen.add(review['review_id'])
+        date.fromisoformat(review['review_date'])
+        key = (review['record_type'], review['target_id'], *(review[k] for k in key_fields), review['field'])
+        row = index.get(key)
+        if row is None or review['source_id'] != row['source_id'] or Decimal(review['confirmed_value']) != Decimal(row[review['field']]):
+            raise ValueError('User review target/value mismatch')
+        if review['reviewer'] != 'user' or review['review_status'] != 'user_verified' or not review['note']:
+            raise ValueError('Missing human review provenance')
+        if any(review[k] != row[k] for k in ['pdf_page', 'report_page']):
+            raise ValueError('User review source page mismatch')
+        if len(review['attachment_sha256']) != 64 or any(c not in '0123456789abcdef' for c in review['attachment_sha256']):
+            raise ValueError('Invalid attachment checksum')
+        if min(int(review['attachment_pdf_page']), int(review['attachment_report_page'])) < 1:
+            raise ValueError('Missing attachment page mapping')
+        confirmed.add(key)
+    if any(r['review_status'] == 'user_verified' and key not in confirmed for key, r in index.items()):
+        raise ValueError('User-verified record has no review log')
+
 def build(root=ROOT):
     issuers = read_csv(root/'data/issuers.csv')
     sources = read_csv(root/'data/sources.csv')
     facts = read_csv(root/'data/facts.csv')
     debt_breakdown=read_csv(root/'data/debt_breakdown.csv')
     evidence_issues=read_csv(root/'data/evidence_issues.csv')
+    income_evidence=read_csv(root/'data/investment_income_evidence.csv')
+    review_log=read_csv(root/'data/review_log.csv')
     groups = validate(issuers, sources, facts)
     validate_debt_breakdown(debt_breakdown,facts,evidence_issues)
+    income_checks=validate_income_evidence(income_evidence,facts,sources)
+    validate_review_log(review_log,facts,income_evidence,evidence_issues)
     result = []
     for (issuer, period, scope, vintage), values in sorted(groups.items()):
         derived = derive(values)
@@ -190,7 +268,9 @@ def build(root=ROOT):
               ('reconciliation',reconciliation,
               ['issuer_id','period_end','scope','metric','comparison_type','old_cny_1000','new_cny_1000','delta_cny_1000','old_source_id','new_source_id','old_pdf_page','new_pdf_page']),
               ('evidence_issues',evidence_issues,
-              ['issue_id','issuer_id','period_end','scope','report_vintage','check','category','field','expected_delta','unit','source_id','pdf_page','report_page','status','review_status','note'])]:
+              ['issue_id','issuer_id','period_end','scope','report_vintage','check','category','field','expected_delta','unit','source_id','pdf_page','report_page','status','review_status','note']),
+              ('investment_income_evidence',income_evidence,list(income_evidence[0])),
+              ('review_log',review_log,list(review_log[0]))]:
             connection.execute(f'DROP TABLE IF EXISTS {name}')
             connection.execute(f'CREATE TABLE {name} ('+', '.join(f'"{field}" TEXT' for field in fields)+')')
             connection.executemany(f'INSERT INTO {name} VALUES ('+','.join('?' for _ in fields)+')',
@@ -210,6 +290,8 @@ def build(root=ROOT):
                'reconciliation':reconciliation,
                'debt_breakdown':debt_breakdown,
                'evidence_issues':evidence_issues,
+               'investment_income_evidence':income_evidence,'income_checks':income_checks,
+               'review_log':review_log,
                'metric_labels':METRICS,'derived_labels':DERIVED,
                'stress': {'ocf_decline': 0.2, 'capex_increase': 0.1}}
     serialized = json.dumps(payload,ensure_ascii=False,indent=2)

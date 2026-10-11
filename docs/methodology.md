@@ -67,3 +67,9 @@
 ## 尚未覆盖的信用判断
 
 母公司现金来源已初步列示，但资金下沉、股利来源、资金调拨限制、股东支持、可用授信、再融资渠道、煤价与电价、担保与或有负债、债券条款、个券流动性及利差尚待深入核查。金融比率只能作为这些研究的入口。
+
+## 收益确认、收现与复核状态
+
+`investment_income_evidence.csv`以measurement_basis区分accounting_income与cash_flow。收益构成只与收益合计核对；现金总额只与主事实表的investment_income_cash核对，不强行令现金等于当期收益。cash_minus_accounting是两种口径的差额，bridge_status保持cash_bridge_pending；它不等于跨期收现或子公司现金分红。
+
+`review_log.csv`记录用户明确反馈的字段、确认值、日期及文件哈希／页码映射。用户反馈金额为约数时，原表精确元值由AI交叉核对，在日志备注中区分。每个user_verified记录必须有对应日志；未反馈字段保持agent_verified。问题的review_status与status分别表示原文复核和问题解决，用户确认原表算术矛盾不改变unresolved。

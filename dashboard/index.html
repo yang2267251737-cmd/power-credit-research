@@ -10,19 +10,20 @@
 <style>th{white-space:normal;max-width:230px}#comparison th:first-child{min-width:100px}</style>
 </head>
 <body><main>
-<div class="top"><div><div class="eyebrow">POWER CREDIT RESEARCH / v0.2</div><h1>电力发行人 · 偿债能力比较</h1><p class="muted">从原始披露到财务指标，让每一个数字都能回到证据。</p></div><span class="badge">三年数据 · 母公司与合并口径</span></div>
+<div class="top"><div><div class="eyebrow">POWER CREDIT RESEARCH / v0.2.1</div><h1>电力发行人 · 偿债能力比较</h1><p class="muted">从原始披露到财务指标，让每一个数字都能回到证据。</p></div><span class="badge">三年数据 · 母公司与合并口径</span></div>
 <div class="stats"><div class="stat"><b id="issuerCount"></b><span>上市公司发行人</span></div><div class="stat"><b id="factCount"></b><span>附页码事实，另有46条债务明细</span></div><div class="stat"><b>2023–2025</b><span>按报告版本保留比较数</span></div><div class="stat"><b>CSV + SQLite</b><span>可复现研究数据</span></div></div>
 <div class="toolbar"><label for="vintage">报告版本</label><select id="vintage"><option value="2025">2025 年报（含2024比较数）</option><option value="2024">2024 年报（含2023比较数）</option></select><label for="period">财务期间</label><select id="period"></select><label for="scope">报表口径</label><select id="scope"><option value="consolidated">发行人合并报表</option><option value="parent">发行人母公司报表</option></select></div>
-<div class="notice" id="scopeNotice"></div>
+<div class="notice" id="scopeNotice"></div><div class="notice" id="reviewSummary"></div>
 <section class="panel"><h2>偿债能力与现金流</h2><div class="table-wrap"><table id="comparison"></table></div><p class="small muted">短债指一年以内到期有息债务；经营现金流为全年流量。各比率只能提供研究线索，需结合再融资、母公司现金流与业务结构分析。</p></section>
 <div class="grid"><section class="panel"><h2>现金对短债的覆盖</h2><div class="legend"><span><i class="dot" style="background:var(--teal)"></i>货币资金 / 短债</span><span><i class="dot" style="background:var(--blue)"></i>扣披露受限资金后 / 短债</span></div><div id="liquidity"></div><p class="small muted">扣减结果为现金代理指标；境外汇回限制、集团内部资金可调拨性与限制项重叠仍需核验。</p></section><section class="panel"><h2>现金流情景分析</h2><p class="small muted">假设经营现金流下降 20%，购建支出增加 10%。单位：亿元。</p><div class="table-wrap"><table id="stress"></table></div><p class="small muted">展示经营现金流减购建支出的变化，未加入利息、分红、融资与其他投资收支；不等于偿债缺口预测。</p></section></div>
 <section class="panel"><h2>研究关注点</h2><div id="research"></div></section>
 <section class="panel"><h2>发行人母公司 · 现金来源与短债</h2><div class="table-wrap"><table id="parent"></table></div><p class="small muted">金额：亿元。投资收益收到的现金包含不同投资来源，不能直接认定为子公司股利回流。母公司现金未扣受限资金，限制情况待查；母公司不等于控股集团。</p></section>
+<section class="panel"><h2>华能母公司 · 投资收益与现金收现</h2><div class="table-wrap"><table id="incomeEvidence"></table></div><p class="notice" id="incomeGap"></p><p class="small muted">收益附注是权责发生制构成，不能作为现金收现拆分。权益法收益是利润份额；成本法收益和委托贷款收益也需核查应收变动与到账时间。跨期到账金额及子公司实际现金回流尚未桥接。</p></section>
 <section class="panel"><h2>2024 年数字 · 不同报告版本的差异</h2><div class="table-wrap"><table id="reconciliation"></table></div><p class="small muted">仅展示有差异的字段；旧值来自2024年报，新值来自2025年报。债务对照为年末值与下一报告期初值，属于核查线索，未认定为已完成债务重述桥接。</p></section>
 <section class="panel"><h2>债务类别与期限原表</h2><div class="notice" id="debtIssues"></div><div class="table-wrap"><table id="debt"></table></div><p class="small muted">单位：亿元。保留披露精度与原表空白。舍入容差为0.03亿元；超过容差须登记原文矛盾且精确匹配差额。空白不自动填零。未完成财报附注与评级债务口径的逐项桥接。</p></section>
-<section class="panel"><h2>原始数据与证据</h2><div class="controls"><label>发行人 <select id="issuer"><option value="all">全部</option></select></label><label>字段筛选 <input id="search" placeholder="如：受限、经营现金流、debt"></label></div><p class="small muted">页码链接使用 PDF 文件页序，表内另列报告印刷页码。核验状态：AI 已核对，等待你的独立复核。</p><div class="table-wrap"><table id="facts"></table></div></section>
+<section class="panel"><h2>原始数据与证据</h2><div class="controls"><label>发行人 <select id="issuer"><option value="all">全部</option></select></label><label>字段筛选 <input id="search" placeholder="如：受限、经营现金流、debt"></label></div><p class="small muted">页码链接使用 PDF 文件页序，表内另列报告印刷页码。每行显示核验状态。用户已复核的字段有独立日志；其余仍为AI核对。</p><div class="table-wrap"><table id="facts"></table></div></section>
 <section class="panel"><h2>口径与资料缺口</h2><ul class="notes"><li>“经营现金流减购建支出”为本项目定义的现金流代理指标，未覆盖全部投资收支和融资收支。</li><li>权益列报永续债不会自动计入披露的有息债务；100%重分类情景只展示杠杆敏感性。</li><li>母公司受限资金、2023年末债务期限结构及大唐国际2024年末债务明细尚缺；缺失比率留空。</li><li>2025年报债务章节期初值另存，只用于核查，不与旧报告财务数据混用。负经营现金流不套用现有下降情景。</li><li>三年数据来自两个年报版本；华电国际2024年合并报表比较数、大唐国际2023年合并比较数已重述。尚未形成统一合并范围的三年连续序列，不直接用于历史时点回测。</li><li>授信实际可用额度、评级依据、再融资事件及2026年中期数据待补，未接入个券估值。</li></ul></section>
-<p class="foot">资料核查日期：2026-10-11。公开披露来源可逐条追溯；AI已核对，用户独立复核待完成。</p>
+<p class="foot">资料核查日期：2026-10-11。公开披露来源可逐条追溯；华能部分字段已完成用户复核，其余待复核；原文算术矛盾仍待解决。</p>
 </main><script id="researchData" type="application/json">{
   "as_of": "2026-10-11",
   "financial_snapshot": "2023–2025年，按报告版本与报表口径分组",
@@ -4335,7 +4336,7 @@
       "report_page": "107",
       "section": "债券相关情况1.2合并口径有息债务",
       "basis": "current_year",
-      "review_status": "agent_verified",
+      "review_status": "user_verified",
       "note": "一年以内含一年；按亿元保留两位小数",
       "report_vintage": "2025"
     },
@@ -4454,8 +4455,8 @@
       "report_page": "139",
       "section": "母公司现金流量表",
       "basis": "current_year",
-      "review_status": "agent_verified",
-      "note": "含不同投资收益现金来源，不等同于子公司股利回流",
+      "review_status": "user_verified",
+      "note": "用户确认不能全部认定为子公司分红；收益附注为权责发生制，现金桥接尚未完成，见investment_income_evidence.csv",
       "report_vintage": "2025"
     },
     {
@@ -4471,7 +4472,7 @@
       "report_page": "132",
       "section": "母公司资产负债表",
       "basis": "current_year",
-      "review_status": "agent_verified",
+      "review_status": "user_verified",
       "note": "",
       "report_vintage": "2025"
     },
@@ -4522,7 +4523,7 @@
       "report_page": "107",
       "section": "债券章节母公司债务结构",
       "basis": "current_year",
-      "review_status": "agent_verified",
+      "review_status": "user_verified",
       "note": "",
       "report_vintage": "2025"
     },
@@ -4573,8 +4574,8 @@
       "report_page": "132",
       "section": "资产负债表：存放财务公司款项",
       "basis": "current_year",
-      "review_status": "agent_verified",
-      "note": "存款集中度线索；未认定为受限资金或无条件可用资金",
+      "review_status": "user_verified",
+      "note": "用户确认属于发行人自身的财务公司存款债权；归属确认不等于提款安排或可用性已核实",
       "report_vintage": "2025"
     },
     {
@@ -6945,8 +6946,8 @@
       "pdf_page": "108",
       "report_page": "107",
       "status": "unresolved",
-      "review_status": "agent_verified",
-      "note": "原表短债135.36+774.43+138.90=1048.69；披露合计1047.88；超出舍入容差。保留原值并使用披露合计计算覆盖率，待发行人更正或其他可靠披露核实"
+      "review_status": "user_verified",
+      "note": "原表短债135.36+774.43+138.90=1048.69；披露合计1047.88；超出舍入容差。保留原值并使用披露合计计算覆盖率，待发行人更正或其他可靠披露核实；用户复核：原文一致／算术矛盾待查，未修平"
     },
     {
       "issue_id": "HPI_2025_NONBANK_ROW",
@@ -6965,6 +6966,319 @@
       "status": "unresolved",
       "review_status": "agent_verified",
       "note": "原表138.90+98.33=237.23；类别合计236.42；待核实，不擅自把138.90改为138.09"
+    }
+  ],
+  "investment_income_evidence": [
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "component": "cost_method_income",
+      "label": "成本法核算的长期股权投资收益",
+      "value": "7263308745",
+      "unit": "CNY",
+      "currency": "CNY",
+      "measurement_basis": "accounting_income",
+      "role": "component",
+      "source_id": "HPI_2025_AR",
+      "pdf_page": "367",
+      "report_page": "366",
+      "review_status": "user_verified",
+      "note": "当期确认的股利或利润收益，不等于当期子公司分红到账"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "component": "equity_method_income",
+      "label": "权益法核算的长期股权投资收益",
+      "value": "854554684",
+      "unit": "CNY",
+      "currency": "CNY",
+      "measurement_basis": "accounting_income",
+      "role": "component",
+      "source_id": "HPI_2025_AR",
+      "pdf_page": "367",
+      "report_page": "366",
+      "review_status": "user_verified",
+      "note": "联合营利润份额，不能用作现金分红"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "component": "entrusted_loan_income",
+      "label": "委托贷款投资收益",
+      "value": "291539948",
+      "unit": "CNY",
+      "currency": "CNY",
+      "measurement_basis": "accounting_income",
+      "role": "component",
+      "source_id": "HPI_2025_AR",
+      "pdf_page": "367",
+      "report_page": "366",
+      "review_status": "user_verified",
+      "note": "当期确认的投资收益，不自动等于利息现金到账"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "component": "accounting_income_total",
+      "label": "投资收益合计",
+      "value": "8409403377",
+      "unit": "CNY",
+      "currency": "CNY",
+      "measurement_basis": "accounting_income",
+      "role": "total",
+      "source_id": "HPI_2025_AR",
+      "pdf_page": "367",
+      "report_page": "366",
+      "review_status": "agent_verified",
+      "note": "三项本期收益加总；处置收益本期原表空白，未填零"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "component": "investment_income_cash",
+      "label": "取得投资收益收到的现金",
+      "value": "8620066795",
+      "unit": "CNY",
+      "currency": "CNY",
+      "measurement_basis": "cash_flow",
+      "role": "total",
+      "source_id": "HPI_2025_AR",
+      "pdf_page": "140",
+      "report_page": "139",
+      "review_status": "agent_verified",
+      "note": "与facts同值；用户复核在主事实表登记；现金来源及跨期桥接待完成"
+    }
+  ],
+  "income_checks": [
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "accounting_income_cny_1000": "8409403.377",
+      "investment_cash_cny_1000": "8620066.795",
+      "cash_minus_accounting_cny_1000": "210663.418",
+      "bridge_status": "cash_bridge_pending"
+    }
+  ],
+  "review_log": [
+    {
+      "review_id": "HPI_20251011_01",
+      "review_date": "2026-10-11",
+      "reviewer": "user",
+      "record_type": "fact",
+      "target_id": "short_term_interest_bearing_debt",
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "consolidated",
+      "report_vintage": "2025",
+      "field": "value",
+      "confirmed_value": "1047.88",
+      "review_status": "user_verified",
+      "result": "原文及口径确认",
+      "source_id": "HPI_2025_AR",
+      "pdf_page": "108",
+      "report_page": "107",
+      "attachment_filename": "huaneng_2025_annual.pdf",
+      "attachment_sha256": "94d5af3bf6ca4db52511994dc55dcd291aafd1a7d39b7b9af505b815fa6de462",
+      "attachment_pdf_page": "107",
+      "attachment_report_page": "107",
+      "note": "仅确认用户明确反馈的字段；PDF不同编排已逐项对照，不覆盖源文件哈希"
+    },
+    {
+      "review_id": "HPI_20251011_02",
+      "review_date": "2026-10-11",
+      "reviewer": "user",
+      "record_type": "fact",
+      "target_id": "investment_income_cash",
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "field": "value",
+      "confirmed_value": "8620066795",
+      "review_status": "user_verified",
+      "result": "原文及口径确认",
+      "source_id": "HPI_2025_AR",
+      "pdf_page": "140",
+      "report_page": "139",
+      "attachment_filename": "huaneng_2025_annual.pdf",
+      "attachment_sha256": "94d5af3bf6ca4db52511994dc55dcd291aafd1a7d39b7b9af505b815fa6de462",
+      "attachment_pdf_page": "139",
+      "attachment_report_page": "139",
+      "note": "仅确认用户明确反馈的字段；PDF不同编排已逐项对照，不覆盖源文件哈希"
+    },
+    {
+      "review_id": "HPI_20251011_03",
+      "review_date": "2026-10-11",
+      "reviewer": "user",
+      "record_type": "fact",
+      "target_id": "monetary_funds",
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "field": "value",
+      "confirmed_value": "582228150",
+      "review_status": "user_verified",
+      "result": "原文及口径确认",
+      "source_id": "HPI_2025_AR",
+      "pdf_page": "133",
+      "report_page": "132",
+      "attachment_filename": "huaneng_2025_annual.pdf",
+      "attachment_sha256": "94d5af3bf6ca4db52511994dc55dcd291aafd1a7d39b7b9af505b815fa6de462",
+      "attachment_pdf_page": "132",
+      "attachment_report_page": "132",
+      "note": "仅确认用户明确反馈的字段；PDF不同编排已逐项对照，不覆盖源文件哈希"
+    },
+    {
+      "review_id": "HPI_20251011_04",
+      "review_date": "2026-10-11",
+      "reviewer": "user",
+      "record_type": "fact",
+      "target_id": "short_term_interest_bearing_debt",
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "field": "value",
+      "confirmed_value": "395.88",
+      "review_status": "user_verified",
+      "result": "原文及口径确认",
+      "source_id": "HPI_2025_AR",
+      "pdf_page": "108",
+      "report_page": "107",
+      "attachment_filename": "huaneng_2025_annual.pdf",
+      "attachment_sha256": "94d5af3bf6ca4db52511994dc55dcd291aafd1a7d39b7b9af505b815fa6de462",
+      "attachment_pdf_page": "107",
+      "attachment_report_page": "107",
+      "note": "仅确认用户明确反馈的字段；PDF不同编排已逐项对照，不覆盖源文件哈希"
+    },
+    {
+      "review_id": "HPI_20251011_05",
+      "review_date": "2026-10-11",
+      "reviewer": "user",
+      "record_type": "fact",
+      "target_id": "finance_company_deposits",
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "field": "value",
+      "confirmed_value": "559045006",
+      "review_status": "user_verified",
+      "result": "原文及口径确认",
+      "source_id": "HPI_2025_AR",
+      "pdf_page": "133",
+      "report_page": "132",
+      "attachment_filename": "huaneng_2025_annual.pdf",
+      "attachment_sha256": "94d5af3bf6ca4db52511994dc55dcd291aafd1a7d39b7b9af505b815fa6de462",
+      "attachment_pdf_page": "132",
+      "attachment_report_page": "132",
+      "note": "仅确认用户明确反馈的字段；PDF不同编排已逐项对照，不覆盖源文件哈希"
+    },
+    {
+      "review_id": "HPI_20251011_06",
+      "review_date": "2026-10-11",
+      "reviewer": "user",
+      "record_type": "income",
+      "target_id": "cost_method_income",
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "field": "value",
+      "confirmed_value": "7263308745",
+      "review_status": "user_verified",
+      "result": "原文及口径确认",
+      "source_id": "HPI_2025_AR",
+      "pdf_page": "367",
+      "report_page": "366",
+      "attachment_filename": "huaneng_2025_annual.pdf",
+      "attachment_sha256": "94d5af3bf6ca4db52511994dc55dcd291aafd1a7d39b7b9af505b815fa6de462",
+      "attachment_pdf_page": "367",
+      "attachment_report_page": "367",
+      "note": "用户反馈金额为约数；精确元值经AI对照两份原表核对。属于收益确认，非现金到账拆分"
+    },
+    {
+      "review_id": "HPI_20251011_07",
+      "review_date": "2026-10-11",
+      "reviewer": "user",
+      "record_type": "income",
+      "target_id": "equity_method_income",
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "field": "value",
+      "confirmed_value": "854554684",
+      "review_status": "user_verified",
+      "result": "原文及口径确认",
+      "source_id": "HPI_2025_AR",
+      "pdf_page": "367",
+      "report_page": "366",
+      "attachment_filename": "huaneng_2025_annual.pdf",
+      "attachment_sha256": "94d5af3bf6ca4db52511994dc55dcd291aafd1a7d39b7b9af505b815fa6de462",
+      "attachment_pdf_page": "367",
+      "attachment_report_page": "367",
+      "note": "用户反馈金额为约数；精确元值经AI对照两份原表核对。属于收益确认，非现金到账拆分"
+    },
+    {
+      "review_id": "HPI_20251011_08",
+      "review_date": "2026-10-11",
+      "reviewer": "user",
+      "record_type": "income",
+      "target_id": "entrusted_loan_income",
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "field": "value",
+      "confirmed_value": "291539948",
+      "review_status": "user_verified",
+      "result": "原文及口径确认",
+      "source_id": "HPI_2025_AR",
+      "pdf_page": "367",
+      "report_page": "366",
+      "attachment_filename": "huaneng_2025_annual.pdf",
+      "attachment_sha256": "94d5af3bf6ca4db52511994dc55dcd291aafd1a7d39b7b9af505b815fa6de462",
+      "attachment_pdf_page": "367",
+      "attachment_report_page": "367",
+      "note": "用户反馈金额为约数；精确元值经AI对照两份原表核对。属于收益确认，非现金到账拆分"
+    },
+    {
+      "review_id": "HPI_20251011_09",
+      "review_date": "2026-10-11",
+      "reviewer": "user",
+      "record_type": "issue",
+      "target_id": "HPI_2025_SHORT_SUM",
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "consolidated",
+      "report_vintage": "2025",
+      "field": "expected_delta",
+      "confirmed_value": "0.81",
+      "review_status": "user_verified",
+      "result": "原文一致／算术矛盾待查",
+      "source_id": "HPI_2025_AR",
+      "pdf_page": "108",
+      "report_page": "107",
+      "attachment_filename": "huaneng_2025_annual.pdf",
+      "attachment_sha256": "94d5af3bf6ca4db52511994dc55dcd291aafd1a7d39b7b9af505b815fa6de462",
+      "attachment_pdf_page": "107",
+      "attachment_report_page": "107",
+      "note": "用户确认分类加总与合计矛盾；问题仍为unresolved。另一非银行行检查未扩大标记为用户复核"
     }
   ],
   "metric_labels": {
@@ -7033,6 +7347,7 @@ const names=Object.fromEntries(D.issuers.map(x=>[x.issuer_id,x.short_name]));
 const sources=Object.fromEntries(D.sources.map(x=>[x.source_id,x]));
 const scales={CNY:.001,CNY_1000:1,CNY_100M:100000};
 const basisLabels={current_year:'本期',restated_comparative:'已重述比较数',report_comparative:'报告比较数',debt_opening_disclosure:'债务期初披露，仅核对'};
+const reviewLabels={agent_verified:'AI已核对',user_verified:'用户已复核'};
 const unitLabels={CNY:'元',CNY_1000:'千元',CNY_100M:'亿元'};
 const escapeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const format=(v,type='multiple')=>v===null||v===undefined?'待补充':type==='percent'?(Number(v)*100).toFixed(2)+'%':type==='amount'?(Number(v)/100000).toFixed(2):Number(v).toFixed(3)+'x';
@@ -7044,6 +7359,9 @@ function render(){
  const vintage=document.getElementById('vintage').value,scope=document.getElementById('scope').value;
  const rows=D.comparison.filter(x=>x.period_end===period&&x.scope===scope&&x.report_vintage===vintage);
  document.getElementById('scopeNotice').textContent=`当前使用${vintage}年报、${period.slice(0,4)}年数据、${scope==='parent'?'发行人母公司':'发行人合并'}口径。计算不跨报告版本拼接。2023数据见2024年报；华电国际2024合并比较数在2025年报中已重述。缺失债务或受限资金时，相应比率留空。`;
+ const allVerified=D.facts.filter(f=>f.review_status==='user_verified').length;
+ const scopeVerified=D.facts.filter(f=>f.period_end===period&&f.scope===scope&&f.report_vintage===vintage&&f.review_status==='user_verified').length;
+ document.getElementById('reviewSummary').textContent=`全库270条财务事实中，${allVerified}条已完成用户复核；当前口径${scopeVerified}条。另有3项收益构成和1项短债矛盾的用户反馈记录。确认原文不等于解决矛盾或完成现金桥接。`;
  const columns=['liabilities_assets',scope==='parent'?'cash_short_debt':'adjusted_cash_short_debt','ocf_debt','short_debt_share','ocf_after_cash_capex'];
  document.getElementById('comparison').innerHTML='<thead><tr><th>发行人</th>'+columns.map(k=>`<th>${escapeHtml(D.derived_labels[k][0])}</th>`).join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr><td class="name">'+names[r.issuer_id]+'</td>'+columns.map(k=>`<td>${format(r.metrics[k],D.derived_labels[k][1])}</td>`).join('')+'</tr>').join('')+'</tbody>';
  const maximum=Math.max(.3,...rows.flatMap(r=>[Number(r.metrics.cash_short_debt||0),Number(r.metrics.adjusted_cash_short_debt||0)]));
@@ -7055,20 +7373,27 @@ function render(){
  document.getElementById('parent').innerHTML='<thead><tr><th>发行人</th><th>母公司货币资金</th><th>合并货币资金</th><th>母公司短债</th><th>母公司经营现金流</th><th>母公司投资收益现金</th></tr></thead><tbody>'+D.issuers.map(i=>`<tr><td>${names[i.issuer_id]}</td>${[['parent','monetary_funds'],['consolidated','monetary_funds'],['parent','short_term_interest_bearing_debt'],['parent','operating_cash_flow'],['parent','investment_income_cash']].map(([s,m])=>`<td>${format(value(i.issuer_id,s,m),'amount')}</td>`).join('')}</tr>`).join('')+'</tbody>';
  const diffs=D.reconciliation.filter(r=>r.scope===scope&&Number(r.delta_cny_1000)!==0);
  document.getElementById('reconciliation').innerHTML='<thead><tr><th>发行人 / 字段</th><th>旧值（亿元）</th><th>新值（亿元）</th><th>差额（亿元）</th><th>原文</th></tr></thead><tbody>'+diffs.map(r=>`<tr><td>${names[r.issuer_id]} / ${D.metric_labels[r.metric]}</td><td>${format(r.old_cny_1000,'amount')}</td><td>${format(r.new_cny_1000,'amount')}</td><td>${format(r.delta_cny_1000,'amount')}</td><td><a target="_blank" rel="noopener" href="${sources[r.old_source_id].url}#page=${r.old_pdf_page}">旧版</a> / <a target="_blank" rel="noopener" href="${sources[r.new_source_id].url}#page=${r.new_pdf_page}">新版</a></td></tr>`).join('')+(diffs.length?'':'<tr><td colspan="5">已核对字段未发现版本差额；不代表所有附注及债务定义均已一致。</td></tr>')+'</tbody>';
- renderFacts();renderDebt();
+ renderIncome();renderFacts();renderDebt();
+}
+function renderIncome(){
+ const period=document.getElementById('period').value,vintage=document.getElementById('vintage').value;
+ const rows=D.investment_income_evidence.filter(r=>r.period_end===period&&r.report_vintage===vintage);
+ document.getElementById('incomeEvidence').innerHTML='<thead><tr><th>母公司项目</th><th>金额（亿元）</th><th>计量口径</th><th>PDF / 印刷页</th><th>复核状态</th></tr></thead><tbody>'+rows.map(r=>`<tr><td>${escapeHtml(r.label)}</td><td>${(Number(r.value)*scales[r.unit]/100000).toFixed(2)}</td><td>${r.measurement_basis==='cash_flow'?'现金流量':'权责发生制收益'}</td><td><a target="_blank" rel="noopener" href="${sources[r.source_id].url}#page=${r.pdf_page}">${r.pdf_page} / ${r.report_page}</a></td><td>${r.measurement_basis==='cash_flow'?reviewLabels[D.facts.find(f=>f.issuer_id===r.issuer_id&&f.period_end===r.period_end&&f.scope===r.scope&&f.report_vintage===r.report_vintage&&f.metric==='investment_income_cash').review_status]+'（主事实）':reviewLabels[r.review_status]}</td></tr>`).join('')+(rows.length?'':'<tr><td colspan="5">当前期间／报告版本尚未录入收益构成。</td></tr>')+'</tbody>';
+ const check=D.income_checks.find(r=>r.period_end===period&&r.report_vintage===vintage);
+ document.getElementById('incomeGap').textContent=check?`现金收现86.20亿元，收益合计84.09亿元，相差${(Number(check.cash_minus_accounting_cny_1000)/100000).toFixed(4)}亿元。差额尚未归因，不认定为已验证的跨期到账或分红回流。`:'现金桥接资料待补。';
 }
 function renderFacts(){
  const period=document.getElementById('period').value,issuer=document.getElementById('issuer').value,q=document.getElementById('search').value.toLowerCase();
  const scope=document.getElementById('scope').value,vintage=document.getElementById('vintage').value;
  const facts=D.facts.filter(f=>f.period_end===period&&f.scope===scope&&f.report_vintage===vintage&&(issuer==='all'||issuer===f.issuer_id)&&((D.metric_labels[f.metric]||'')+' '+f.metric).toLowerCase().includes(q));
- document.getElementById('facts').innerHTML='<thead><tr><th>发行人 / 字段</th><th>数值（亿元）</th><th>原始数值 / 单位</th><th>PDF / 印刷页</th><th>期间口径</th><th>说明</th></tr></thead><tbody>'+facts.map(f=>`<tr><td>${escapeHtml(names[f.issuer_id])}<br>${escapeHtml(D.metric_labels[f.metric])}</td><td>${f.unit==='CNY_100M'?escapeHtml(f.value):(Number(f.value)*scales[f.unit]/100000).toFixed(3)}</td><td>${Number(f.value).toLocaleString('zh-CN',{maximumFractionDigits:3})} ${unitLabels[f.unit]}</td><td><a target="_blank" rel="noopener" href="${escapeHtml(sources[f.source_id].url)}#page=${f.pdf_page}">${f.pdf_page} / ${f.report_page}</a></td><td>${escapeHtml(basisLabels[f.basis]||f.basis)}</td><td class="fact-note">${escapeHtml(f.note||f.section)}</td></tr>`).join('')+'</tbody>';
+ document.getElementById('facts').innerHTML='<thead><tr><th>发行人 / 字段</th><th>数值（亿元）</th><th>原始数值 / 单位</th><th>PDF / 印刷页</th><th>期间口径</th><th>复核状态</th><th>说明</th></tr></thead><tbody>'+facts.map(f=>`<tr><td>${escapeHtml(names[f.issuer_id])}<br>${escapeHtml(D.metric_labels[f.metric])}</td><td>${f.unit==='CNY_100M'?escapeHtml(f.value):(Number(f.value)*scales[f.unit]/100000).toFixed(3)}</td><td>${Number(f.value).toLocaleString('zh-CN',{maximumFractionDigits:3})} ${unitLabels[f.unit]}</td><td><a target="_blank" rel="noopener" href="${escapeHtml(sources[f.source_id].url)}#page=${f.pdf_page}">${f.pdf_page} / ${f.report_page}</a></td><td>${escapeHtml(basisLabels[f.basis]||f.basis)}</td><td class="status">${reviewLabels[f.review_status]}</td><td class="fact-note">${escapeHtml(f.note||f.section)}</td></tr>`).join('')+'</tbody>';
 }
 function renderDebt(){
  const period=document.getElementById('period').value,scope=document.getElementById('scope').value,vintage=document.getElementById('vintage').value,issuer=document.getElementById('issuer').value;
  const rows=D.debt_breakdown.filter(r=>r.period_end===period&&r.scope===scope&&r.report_vintage===vintage&&(issuer==='all'||issuer===r.issuer_id));
  const issues=D.evidence_issues.filter(r=>r.period_end===period&&r.scope===scope&&r.report_vintage===vintage&&(issuer==='all'||issuer===r.issuer_id));
  const issueBox=document.getElementById('debtIssues');issueBox.hidden=!issues.length;
- issueBox.textContent=issues.map(r=>`${names[r.issuer_id]}待核实：${r.note}`).join('；');
+ issueBox.textContent=issues.map(r=>`${names[r.issuer_id]}（${reviewLabels[r.review_status]}／${r.status==='unresolved'?'问题未解决':r.status}）：${r.note}`).join('；');
  document.getElementById('debt').innerHTML='<thead><tr><th>发行人 / 类别</th><th>合计</th><th>一年以内（含）</th><th>超过一年</th><th>PDF / 印刷页</th></tr></thead><tbody>'+rows.map(r=>`<tr><td>${names[r.issuer_id]} / ${escapeHtml(r.category)}</td><td>${r.total||'原表空白'}</td><td>${r.within_one_year||'原表空白'}</td><td>${r.over_one_year||'原表空白'}</td><td><a target="_blank" rel="noopener" href="${sources[r.source_id].url}#page=${r.pdf_page}">${r.pdf_page} / ${r.report_page}</a></td></tr>`).join('')+(rows.length?'':'<tr><td colspan="5">本期间／报告版本未录入债务期限原表，相关覆盖比率留空。</td></tr>')+'</tbody>';
 }
 function updatePeriods(){

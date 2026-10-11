@@ -2,7 +2,7 @@ import copy
 import unittest
 from decimal import Decimal
 from power_credit.model import normalize, derive, stress
-from power_credit.build import ROOT, read_csv, validate, reconcile_versions, validate_debt_breakdown
+from power_credit.build import ROOT, read_csv, validate, reconcile_versions, validate_debt_breakdown, validate_income_evidence, validate_review_log
 
 class FinancialTests(unittest.TestCase):
     def test_equal_currency_amounts_produce_identical_results(self):
@@ -84,6 +84,29 @@ class EvidenceTests(unittest.TestCase):
         facts[0]['report_vintage']='2026'
         with self.assertRaisesRegex(ValueError,'vintage/source mismatch'):
             validate(self.issuers,self.sources,facts)
+
+    def test_accrual_income_is_not_used_as_a_cash_receipts_breakdown(self):
+        rows=read_csv(ROOT/'data/investment_income_evidence.csv')
+        result=validate_income_evidence(rows,self.facts,self.sources)[0]
+        self.assertEqual(result['bridge_status'],'cash_bridge_pending')
+        self.assertEqual(Decimal(result['cash_minus_accounting_cny_1000']),Decimal('210663.418'))
+        rows[1]['measurement_basis']='cash_flow'
+        with self.assertRaisesRegex(ValueError,'separate accounting and cash totals'):
+            validate_income_evidence(rows,self.facts,self.sources)
+
+    def test_user_verification_requires_exact_feedback_provenance(self):
+        reviews=read_csv(ROOT/'data/review_log.csv')
+        income=read_csv(ROOT/'data/investment_income_evidence.csv')
+        issues=read_csv(ROOT/'data/evidence_issues.csv')
+        validate_review_log(reviews,self.facts,income,issues)
+        self.assertEqual(sum(f['review_status']=='user_verified' for f in self.facts),5)
+        self.assertTrue(all(f['review_status']=='agent_verified' for f in self.facts if f['metric']=='operating_cash_flow'))
+        self.assertTrue(all(i['status']=='unresolved' for i in issues))
+        with self.assertRaisesRegex(ValueError,'no review log'):
+            validate_review_log(reviews[1:],self.facts,income,issues)
+        reviews[0]['confirmed_value']='0'
+        with self.assertRaisesRegex(ValueError,'target/value mismatch'):
+            validate_review_log(reviews,self.facts,income,issues)
 
     def test_duplicate_fact_is_rejected(self):
         with self.assertRaisesRegex(ValueError,'Duplicate fact'):

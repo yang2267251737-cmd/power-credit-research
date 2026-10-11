@@ -1,0 +1,6 @@
+issuer_id,period_end,scope,report_vintage,component,label,value,unit,currency,measurement_basis,role,source_id,pdf_page,report_page,review_status,note
+HPI,2025-12-31,parent,2025,cost_method_income,成本法核算的长期股权投资收益,7263308745,CNY,CNY,accounting_income,component,HPI_2025_AR,367,366,user_verified,当期确认的股利或利润收益，不等于当期子公司分红到账
+HPI,2025-12-31,parent,2025,equity_method_income,权益法核算的长期股权投资收益,854554684,CNY,CNY,accounting_income,component,HPI_2025_AR,367,366,user_verified,联合营利润份额，不能用作现金分红
+HPI,2025-12-31,parent,2025,entrusted_loan_income,委托贷款投资收益,291539948,CNY,CNY,accounting_income,component,HPI_2025_AR,367,366,user_verified,当期确认的投资收益，不自动等于利息现金到账
+HPI,2025-12-31,parent,2025,accounting_income_total,投资收益合计,8409403377,CNY,CNY,accounting_income,total,HPI_2025_AR,367,366,agent_verified,三项本期收益加总；处置收益本期原表空白，未填零
+HPI,2025-12-31,parent,2025,investment_income_cash,取得投资收益收到的现金,8620066795,CNY,CNY,cash_flow,total,HPI_2025_AR,140,139,agent_verified,与facts同值；用户复核在主事实表登记；现金来源及跨期桥接待完成

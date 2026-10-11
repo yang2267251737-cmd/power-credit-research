@@ -29,7 +29,9 @@ def main():
         facts=list(csv.DictReader(f))
     with (ROOT/'data/debt_breakdown.csv').open(encoding='utf-8',newline='') as f:
         debt=list(csv.DictReader(f))
-    evidence=facts+[dict(row,value=row[field]) for row in debt for field in ['total','within_one_year','over_one_year'] if row[field]]
+    with (ROOT/'data/investment_income_evidence.csv').open(encoding='utf-8',newline='') as f:
+        income=list(csv.DictReader(f))
+    evidence=facts+income+[dict(row,value=row[field]) for row in debt for field in ['total','within_one_year','over_one_year'] if row[field]]
     for fact in evidence:
         key=(fact['source_id'],int(fact['pdf_page']))
         if key not in cache:
@@ -38,7 +40,7 @@ def main():
             cache[key]={Decimal(token.replace(',','')) for token in tokens}
         if Decimal(fact['value']) not in cache[key]:
             raise ValueError('Value absent from page: '+repr(fact))
-    print(f'Checked source hashes, page counts and {len(evidence)} value/page references ({len(facts)} facts; {len(debt)} debt rows)')
+    print(f'Checked source hashes, page counts and {len(evidence)} value/page references ({len(facts)} facts; {len(debt)} debt rows; {len(income)} income evidence rows)')
 
 if __name__=='__main__':
     main()

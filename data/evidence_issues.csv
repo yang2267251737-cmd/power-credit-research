@@ -1,3 +1,3 @@
 issue_id,issuer_id,period_end,scope,report_vintage,check,category,field,expected_delta,unit,source_id,pdf_page,report_page,status,review_status,note
-HPI_2025_SHORT_SUM,HPI,2025-12-31,consolidated,2025,category_column_sum,合计,within_one_year,0.81,CNY_100M,HPI_2025_AR,108,107,unresolved,agent_verified,原表短债135.36+774.43+138.90=1048.69；披露合计1047.88；超出舍入容差。保留原值并使用披露合计计算覆盖率，待发行人更正或其他可靠披露核实
+HPI_2025_SHORT_SUM,HPI,2025-12-31,consolidated,2025,category_column_sum,合计,within_one_year,0.81,CNY_100M,HPI_2025_AR,108,107,unresolved,user_verified,原表短债135.36+774.43+138.90=1048.69；披露合计1047.88；超出舍入容差。保留原值并使用披露合计计算覆盖率，待发行人更正或其他可靠披露核实；用户复核：原文一致／算术矛盾待查，未修平
 HPI_2025_NONBANK_ROW,HPI,2025-12-31,consolidated,2025,category_row_sum,非银行金融机构贷款,total,0.81,CNY_100M,HPI_2025_AR,108,107,unresolved,agent_verified,原表138.90+98.33=237.23；类别合计236.42；待核实，不擅自把138.90改为138.09
