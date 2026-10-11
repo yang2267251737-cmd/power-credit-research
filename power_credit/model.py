@@ -13,9 +13,12 @@ METRICS = {
     'remittance_restricted_funds': '境外汇回受限资金（另列）',
     'operating_cash_flow': '经营活动现金流净额',
     'cash_capex': '购建长期资产支付的现金',
-    'interest_bearing_debt': '披露的合并有息债务',
+    'interest_bearing_debt': '披露的有息债务（依所选口径）',
     'short_term_interest_bearing_debt': '一年以内到期有息债务',
     'perpetual_equity': '权益列报永续债',
+    'investment_income_cash': '取得投资收益收到的现金',
+    'debt_disclosed_opening': '债券章节披露的期初有息债务（仅核对）',
+    'finance_company_deposits': '存放财务公司款项',
 }
 DERIVED = {
     'liabilities_assets': ('资产负债率', 'percent'),

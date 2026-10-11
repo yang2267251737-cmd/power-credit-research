@@ -27,15 +27,18 @@ def main():
     cache={}
     with (ROOT/'data/facts.csv').open(encoding='utf-8',newline='') as f:
         facts=list(csv.DictReader(f))
-    for fact in facts:
+    with (ROOT/'data/debt_breakdown.csv').open(encoding='utf-8',newline='') as f:
+        debt=list(csv.DictReader(f))
+    evidence=facts+[dict(row,value=row[field]) for row in debt for field in ['total','within_one_year','over_one_year'] if row[field]]
+    for fact in evidence:
         key=(fact['source_id'],int(fact['pdf_page']))
         if key not in cache:
             text=readers[key[0]].pages[key[1]-1].extract_text() or ''
-            tokens=re.findall(r'(?<!\d)(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?',text)
+            tokens=re.findall(r'(?<!\d)-?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?',text)
             cache[key]={Decimal(token.replace(',','')) for token in tokens}
         if Decimal(fact['value']) not in cache[key]:
             raise ValueError('Value absent from page: '+repr(fact))
-    print(f'Checked source hashes, page counts and {len(facts)} value/page references')
+    print(f'Checked source hashes, page counts and {len(evidence)} value/page references ({len(facts)} facts; {len(debt)} debt rows)')
 
 if __name__=='__main__':
     main()
