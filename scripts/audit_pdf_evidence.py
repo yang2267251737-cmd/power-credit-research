@@ -31,7 +31,12 @@ def main():
         debt=list(csv.DictReader(f))
     with (ROOT/'data/investment_income_evidence.csv').open(encoding='utf-8',newline='') as f:
         income=list(csv.DictReader(f))
-    evidence=facts+income+[dict(row,value=row[field]) for row in debt for field in ['total','within_one_year','over_one_year'] if row[field]]
+    with (ROOT/'data/cash_bridge_inputs.csv').open(encoding='utf-8',newline='') as f:
+        bridge_inputs=list(csv.DictReader(f))
+    with (ROOT/'data/dividend_receivables.csv').open(encoding='utf-8',newline='') as f:
+        receivables=list(csv.DictReader(f))
+    evidence=facts+income+bridge_inputs+[dict(row,value=row[field]) for row in debt for field in ['total','within_one_year','over_one_year'] if row[field]]
+    evidence += [dict(row,value=row[field]) for row in receivables for field in ['opening','closing'] if row[field]]
     for fact in evidence:
         key=(fact['source_id'],int(fact['pdf_page']))
         if key not in cache:

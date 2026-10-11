@@ -2,7 +2,7 @@
 
 An evidence-linked credit research dataset for listed Chinese power issuers.
 
-**状态：v0.2.1，已记录第一轮用户复核。** 覆盖三家发行人的2023–2025年核心报表数据，保留2024、2025两个年报版本。包含270条财务事实、46条债务分类记录和6份公开年报来源；计算按发行人、期间、报表口径和报告版本隔离。尚未形成统一合并范围的三年完整序列。
+**状态：v0.2.2，新增华能母公司条件性收现桥接。** 覆盖三家发行人的2023–2025年核心报表数据，保留2024、2025两个年报版本。包含270条财务事实、46条债务分类记录和6份公开年报来源；计算按发行人、期间、报表口径和报告版本隔离。尚未形成统一合并范围的三年完整序列。
 
 ![Data validation](https://img.shields.io/badge/data-270_sourced_facts-087f83)
 ![Python](https://img.shields.io/badge/Python-3.12%2B-4676ae)
@@ -32,7 +32,7 @@ python -m http.server 8765 --bind 127.0.0.1
 
 如需核对原始 PDF，运行 `python scripts/download_sources.py`；文本提取和原文数值检查工具另需安装 `pypdf`，再运行 `python scripts/extract_pdf_text.py` 或 `python scripts/audit_pdf_evidence.py`。原始文件与提取全文留在本地，不进入版本控制。
 
-本次已核对6份文件的哈希与页数，411个数值／页码引用检查通过；标签、年份列和经济含义仍须结合原表核验，数值出现检查不能替代人工复核。
+本次已核对6份文件的哈希与页数，453个数值／页码引用检查通过；标签、年份列和经济含义仍须结合原表核验，数值出现检查不能替代人工复核。
 
 ## 数据设计
 
@@ -43,6 +43,9 @@ python -m http.server 8765 --bind 127.0.0.1
 | `data/source_checksums.csv` | 本次核查的原始文件哈希与 PDF 页数 |
 | `data/facts.csv` | 原始数值、币种、单位、期间、合并／母公司口径、报告版本、页码与核验状态 |
 | `data/debt_breakdown.csv` | 46条债务类别与期限原表记录；保留空白与披露精度 |
+| `data/cash_bridge_inputs.csv` | 3条华能母公司应收股利余额及联合营宣告分红证据，新增数据待用户复核 |
+| `data/dividend_receivables.csv` | 27行应收股利及重要超1年子表原始明细，保留空白 |
+| `data/processed/cash_bridge.json` | 条件性桥接、假设、残差与已列重要账龄项目占比 |
 | `data/review_log.csv` | 9条用户反馈记录，含字段、日期、文件哈希及两种PDF编排的页码映射 |
 | `data/investment_income_evidence.csv` | 5项华能母公司收益／收现证据，分开记录权责发生制与现金流量 |
 | `data/evidence_issues.csv` | 原文矛盾、精确差额、来源及待核实状态 |
@@ -80,7 +83,9 @@ python -m http.server 8765 --bind 127.0.0.1
 
 ## 下一阶段
 
-已形成 [初步比较研究札记](docs/research_note.md)。下一步按 [协作与复核日志](docs/collaboration.md) 延续核验，补充债务口径桥接、评级、授信与再融资资料，再形成完整主体一页纸和信用报告。阶段边界见 [实施路线](docs/roadmap.md)。
+已形成 [初步比较研究札记](docs/research_note.md)。已新增[华能母公司收现桥接初稿](docs/cash_bridge_huaneng.md)：联合营宣告分红4.65亿元，应收股利净减少6.42亿元；简化假设推算86.62亿元，实际86.20亿元，残差-0.4187亿元未解释。该推算尚未验证，不改写已披露现金流或形成新的偿债覆盖结论。
+
+下一步按 [协作与复核日志](docs/collaboration.md) 延续核验，补充债务口径桥接、评级、授信与再融资资料，再形成完整主体一页纸和信用报告。阶段边界见 [实施路线](docs/roadmap.md)。
 
 ## 公开来源
 

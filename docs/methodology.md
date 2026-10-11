@@ -73,3 +73,9 @@
 `investment_income_evidence.csv`以measurement_basis区分accounting_income与cash_flow。收益构成只与收益合计核对；现金总额只与主事实表的investment_income_cash核对，不强行令现金等于当期收益。cash_minus_accounting是两种口径的差额，bridge_status保持cash_bridge_pending；它不等于跨期收现或子公司现金分红。
 
 `review_log.csv`记录用户明确反馈的字段、确认值、日期及文件哈希／页码映射。用户反馈金额为约数时，原表精确元值由AI交叉核对，在日志备注中区分。每个user_verified记录必须有对应日志；未反馈字段保持agent_verified。问题的review_status与status分别表示原文复核和问题解决，用户确认原表算术矛盾不改变unresolved。
+
+## 条件性收现桥接
+
+华能2025母公司单案公式：成本法收益 + 联合营宣告分红 + 期初应收股利 − 期末应收股利 + 委托贷款收益，得到conditional_investment_receipts。actual_minus_conditional = 实际取得投资收益收到的现金 − 条件推算，负值说明推算高于实际。公式包含未验证的宣告／收现代理和“无其他应收变动”假设，不替代任何事实表现金流，也不计算新的偿债覆盖率。
+
+股利明细只加总已列数字核对总额，空白仍为空；重要超1年已列期末金额占比仅指披露子集，未视为全部逾期或全部超1年应收。详见[cash_bridge_huaneng.md](cash_bridge_huaneng.md)。

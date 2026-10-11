@@ -8,6 +8,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from .model import METRICS, DERIVED, normalize, derive, stress
+from .cash_bridge import derive_cash_bridge
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -244,10 +245,13 @@ def build(root=ROOT):
     evidence_issues=read_csv(root/'data/evidence_issues.csv')
     income_evidence=read_csv(root/'data/investment_income_evidence.csv')
     review_log=read_csv(root/'data/review_log.csv')
+    cash_bridge_inputs=read_csv(root/'data/cash_bridge_inputs.csv')
+    dividend_receivables=read_csv(root/'data/dividend_receivables.csv')
     groups = validate(issuers, sources, facts)
     validate_debt_breakdown(debt_breakdown,facts,evidence_issues)
     income_checks=validate_income_evidence(income_evidence,facts,sources)
     validate_review_log(review_log,facts,income_evidence,evidence_issues)
+    cash_bridge=derive_cash_bridge(cash_bridge_inputs,dividend_receivables,income_evidence,sources)
     result = []
     for (issuer, period, scope, vintage), values in sorted(groups.items()):
         derived = derive(values)
@@ -270,7 +274,9 @@ def build(root=ROOT):
               ('evidence_issues',evidence_issues,
               ['issue_id','issuer_id','period_end','scope','report_vintage','check','category','field','expected_delta','unit','source_id','pdf_page','report_page','status','review_status','note']),
               ('investment_income_evidence',income_evidence,list(income_evidence[0])),
-              ('review_log',review_log,list(review_log[0]))]:
+              ('review_log',review_log,list(review_log[0])),
+              ('cash_bridge_inputs',cash_bridge_inputs,list(cash_bridge_inputs[0])),
+              ('dividend_receivables',dividend_receivables,list(dividend_receivables[0]))]:
             connection.execute(f'DROP TABLE IF EXISTS {name}')
             connection.execute(f'CREATE TABLE {name} ('+', '.join(f'"{field}" TEXT' for field in fields)+')')
             connection.executemany(f'INSERT INTO {name} VALUES ('+','.join('?' for _ in fields)+')',
@@ -292,10 +298,13 @@ def build(root=ROOT):
                'evidence_issues':evidence_issues,
                'investment_income_evidence':income_evidence,'income_checks':income_checks,
                'review_log':review_log,
+               'cash_bridge_inputs':cash_bridge_inputs,'dividend_receivables':dividend_receivables,
+               'cash_bridge':cash_bridge,
                'metric_labels':METRICS,'derived_labels':DERIVED,
                'stress': {'ocf_decline': 0.2, 'capex_increase': 0.1}}
     serialized = json.dumps(payload,ensure_ascii=False,indent=2)
     (output/'research.json').write_text(serialized,encoding='utf-8')
+    (output/'cash_bridge.json').write_text(json.dumps(cash_bridge,ensure_ascii=False,indent=2),encoding='utf-8')
     template = (root/'dashboard/template.html').read_text(encoding='utf-8')
     (root/'dashboard/index.html').write_text(template.replace('__DATA__',serialized.replace('</','<\\/')),encoding='utf-8')
     print(f'Built {len(issuers)} issuers, {len(facts)} facts, {len(result)} issuer-period rows')

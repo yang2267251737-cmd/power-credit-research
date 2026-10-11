@@ -1,0 +1,4 @@
+issuer_id,period_end,scope,report_vintage,unit,currency,source_id,review_status,component,label,value,measurement_basis,pdf_page,report_page,note
+HPI,2025-12-31,parent,2025,CNY,CNY,HPI_2025_AR,agent_verified,dividends_receivable_opening,母公司应收股利期初余额,1130632001,opening_balance,348,347,期初余额；同报告版本，非现金流
+HPI,2025-12-31,parent,2025,CNY,CNY,HPI_2025_AR,agent_verified,dividends_receivable_closing,母公司应收股利期末余额,488613517,closing_balance,348,347,期末余额；不自动认定全部为子公司股利
+HPI,2025-12-31,parent,2025,CNY,CNY,HPI_2025_AR,agent_verified,equity_method_dividends_declared,母公司联合营宣告发放现金股利或利润,465072744,declared_distribution,363,362,表头见PDF第361页／印刷360页；合计在第363页；宣告不等于到账

@@ -10,7 +10,7 @@
 <style>th{white-space:normal;max-width:230px}#comparison th:first-child{min-width:100px}</style>
 </head>
 <body><main>
-<div class="top"><div><div class="eyebrow">POWER CREDIT RESEARCH / v0.2.1</div><h1>电力发行人 · 偿债能力比较</h1><p class="muted">从原始披露到财务指标，让每一个数字都能回到证据。</p></div><span class="badge">三年数据 · 母公司与合并口径</span></div>
+<div class="top"><div><div class="eyebrow">POWER CREDIT RESEARCH / v0.2.2</div><h1>电力发行人 · 偿债能力比较</h1><p class="muted">从原始披露到财务指标，让每一个数字都能回到证据。</p></div><span class="badge">三年数据 · 母公司与合并口径</span></div>
 <div class="stats"><div class="stat"><b id="issuerCount"></b><span>上市公司发行人</span></div><div class="stat"><b id="factCount"></b><span>附页码事实，另有46条债务明细</span></div><div class="stat"><b>2023–2025</b><span>按报告版本保留比较数</span></div><div class="stat"><b>CSV + SQLite</b><span>可复现研究数据</span></div></div>
 <div class="toolbar"><label for="vintage">报告版本</label><select id="vintage"><option value="2025">2025 年报（含2024比较数）</option><option value="2024">2024 年报（含2023比较数）</option></select><label for="period">财务期间</label><select id="period"></select><label for="scope">报表口径</label><select id="scope"><option value="consolidated">发行人合并报表</option><option value="parent">发行人母公司报表</option></select></div>
 <div class="notice" id="scopeNotice"></div><div class="notice" id="reviewSummary"></div>
@@ -19,6 +19,7 @@
 <section class="panel"><h2>研究关注点</h2><div id="research"></div></section>
 <section class="panel"><h2>发行人母公司 · 现金来源与短债</h2><div class="table-wrap"><table id="parent"></table></div><p class="small muted">金额：亿元。投资收益收到的现金包含不同投资来源，不能直接认定为子公司股利回流。母公司现金未扣受限资金，限制情况待查；母公司不等于控股集团。</p></section>
 <section class="panel"><h2>华能母公司 · 投资收益与现金收现</h2><div class="table-wrap"><table id="incomeEvidence"></table></div><p class="notice" id="incomeGap"></p><p class="small muted">收益附注是权责发生制构成，不能作为现金收现拆分。权益法收益是利润份额；成本法收益和委托贷款收益也需核查应收变动与到账时间。跨期到账金额及子公司实际现金回流尚未桥接。</p></section>
+<section class="panel"><h2>华能母公司 · 收现桥接初稿</h2><div class="notice">条件性推算，尚未完成收现核实。宣告分红、收益确认与实际到账分别记录；不擅自填平残差。</div><div class="table-wrap"><table id="cashBridge"></table></div><p class="small muted" id="bridgeAssumptions"></p><p class="notice" id="agedNotice"></p><details><summary>查看重要的账龄超过1年应收股利</summary><div class="table-wrap"><table id="agedReceivables"></table></div><p class="small muted">原表空白保留；本表是重要项目子集，不代表全部超过1年的应收股利。所有新增数据仅由AI核对，待用户复核。</p></details></section>
 <section class="panel"><h2>2024 年数字 · 不同报告版本的差异</h2><div class="table-wrap"><table id="reconciliation"></table></div><p class="small muted">仅展示有差异的字段；旧值来自2024年报，新值来自2025年报。债务对照为年末值与下一报告期初值，属于核查线索，未认定为已完成债务重述桥接。</p></section>
 <section class="panel"><h2>债务类别与期限原表</h2><div class="notice" id="debtIssues"></div><div class="table-wrap"><table id="debt"></table></div><p class="small muted">单位：亿元。保留披露精度与原表空白。舍入容差为0.03亿元；超过容差须登记原文矛盾且精确匹配差额。空白不自动填零。未完成财报附注与评级债务口径的逐项桥接。</p></section>
 <section class="panel"><h2>原始数据与证据</h2><div class="controls"><label>发行人 <select id="issuer"><option value="all">全部</option></select></label><label>字段筛选 <input id="search" placeholder="如：受限、经营现金流、debt"></label></div><p class="small muted">页码链接使用 PDF 文件页序，表内另列报告印刷页码。每行显示核验状态。用户已复核的字段有独立日志；其余仍为AI核对。</p><div class="table-wrap"><table id="facts"></table></div></section>
@@ -7281,6 +7282,554 @@
       "note": "用户确认分类加总与合计矛盾；问题仍为unresolved。另一非银行行检查未扩大标记为用户复核"
     }
   ],
+  "cash_bridge_inputs": [
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "component": "dividends_receivable_opening",
+      "label": "母公司应收股利期初余额",
+      "value": "1130632001",
+      "measurement_basis": "opening_balance",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "期初余额；同报告版本，非现金流"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "component": "dividends_receivable_closing",
+      "label": "母公司应收股利期末余额",
+      "value": "488613517",
+      "measurement_basis": "closing_balance",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "期末余额；不自动认定全部为子公司股利"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "component": "equity_method_dividends_declared",
+      "label": "母公司联合营宣告发放现金股利或利润",
+      "value": "465072744",
+      "measurement_basis": "declared_distribution",
+      "pdf_page": "363",
+      "report_page": "362",
+      "note": "表头见PDF第361页／印刷360页；合计在第363页；宣告不等于到账"
+    }
+  ],
+  "dividend_receivables": [
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "华能（台前）清洁能源有限公司",
+      "opening": "",
+      "closing": "17247783",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "华能辽宁清洁能源有限责任公司",
+      "opening": "217351926",
+      "closing": "",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "华能湖南苏宝顶风电有限责任公司",
+      "opening": "46953535",
+      "closing": "",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "华能玉门风电有限责任公司",
+      "opening": "41501941",
+      "closing": "",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "华能湖南连坪风电有限责任公司",
+      "opening": "22512230",
+      "closing": "28042071",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "华能湖南桂东风电有限责任公司",
+      "opening": "18480682",
+      "closing": "",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "华能（长沙）新能源有限责任公司",
+      "opening": "16484081",
+      "closing": "",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "华能湖南江口风电有限责任公司",
+      "opening": "15276213",
+      "closing": "",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "华能汝州清洁能源有限责任公司",
+      "opening": "6394940",
+      "closing": "6394940",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "武冈市科恒新能源有限公司",
+      "opening": "6215656",
+      "closing": "",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "华能临湘新能源有限公司",
+      "opening": "5000000",
+      "closing": "",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "常德市宏悦新能源有限公司",
+      "opening": "2145395",
+      "closing": "2145395",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "华能河北清洁能源有限责任公司",
+      "opening": "1708856",
+      "closing": "",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "华能（娄底）新能源有限责任公司",
+      "opening": "1474665",
+      "closing": "",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "华能台前风电有限公司",
+      "opening": "34882680",
+      "closing": "37020634",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "华能威海发电有限责任公司",
+      "opening": "149774924",
+      "closing": "",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "华能淮阴发电有限公司",
+      "opening": "98641920",
+      "closing": "98641920",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "华能驻马店风电有限责任公司",
+      "opening": "105811583",
+      "closing": "",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "淮阴二",
+      "opening": "131222697",
+      "closing": "131222697",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "华能榆社发电有限责任公司",
+      "opening": "31100861",
+      "closing": "31100861",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "上海时代航运有限公司",
+      "opening": "141000000",
+      "closing": "107500000",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "山东华鲁海运有限公司",
+      "opening": "36697216",
+      "closing": "29297216",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "原表空白保留；不由空白推定为零或当期已收现，主体关系另行核查"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "receivables",
+      "counterparty": "合计",
+      "opening": "1130632001",
+      "closing": "488613517",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "对已披露明细数字加总核对；空白不作为零余额证明"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "important_over_one_year",
+      "counterparty": "淮阴二",
+      "opening": "131222697",
+      "closing": "131222697",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "重要的账龄超过1年应收股利表；不代表全部超1年应收股利，原表空白保留"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "important_over_one_year",
+      "counterparty": "上海时代航运有限公司",
+      "opening": "141000000",
+      "closing": "107500000",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "重要的账龄超过1年应收股利表；不代表全部超1年应收股利，原表空白保留"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "important_over_one_year",
+      "counterparty": "华能威海发电有限责任公司",
+      "opening": "149774924",
+      "closing": "",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "重要的账龄超过1年应收股利表；不代表全部超1年应收股利，原表空白保留"
+    },
+    {
+      "issuer_id": "HPI",
+      "period_end": "2025-12-31",
+      "scope": "parent",
+      "report_vintage": "2025",
+      "unit": "CNY",
+      "currency": "CNY",
+      "source_id": "HPI_2025_AR",
+      "review_status": "agent_verified",
+      "table_kind": "important_over_one_year",
+      "counterparty": "华能驻马店风电有限责任公司",
+      "opening": "105811583",
+      "closing": "",
+      "pdf_page": "348",
+      "report_page": "347",
+      "note": "重要的账龄超过1年应收股利表；不代表全部超1年应收股利，原表空白保留"
+    }
+  ],
+  "cash_bridge": {
+    "issuer_id": "HPI",
+    "period_end": "2025-12-31",
+    "scope": "parent",
+    "report_vintage": "2025",
+    "unit": "CNY_1000",
+    "amounts": {
+      "cost_method_income": "7263308.745",
+      "equity_method_dividends_declared": "465072.744",
+      "dividends_receivable_opening": "1130632.001",
+      "dividends_receivable_closing": "488613.517",
+      "receivables_decrease": "642018.484",
+      "conditional_dividend_receipts": "8370399.973",
+      "entrusted_loan_income": "291539.948",
+      "conditional_investment_receipts": "8661939.921",
+      "actual_investment_receipts": "8620066.795",
+      "actual_minus_conditional": "-41873.126",
+      "important_aged_disclosed_closing": "238722.697"
+    },
+    "important_aged_disclosed_share": "0.4885716188649770816716885874",
+    "status": "partial_unreconciled",
+    "interpretation": "conditional_scenario_only",
+    "assumptions": [
+      "成本法收益暂作本期宣告股利代理，完整被投资单位及股利来源尚未桥接",
+      "应收股利总额暂假设仅由宣告与收现变动，未排除合并范围、外币、抵销或其他非现金影响",
+      "委托贷款收益暂作利息收现代理，未核实实际到账及应收利息变动"
+    ],
+    "limitations": [
+      "联合营宣告分红不等于实际到账；没有以权益法利润份额代替分红",
+      "应收股利净减少不等于已确认的跨期现金收回金额",
+      "原表空白保留；重要超1年项目的已列金额不代表全部超1年应收股利",
+      "即使残差为零，也不能仅凭数值吻合把假设标为已验证现金来源"
+    ]
+  },
   "metric_labels": {
     "total_assets": "总资产",
     "total_liabilities": "总负债",
@@ -7373,7 +7922,7 @@ function render(){
  document.getElementById('parent').innerHTML='<thead><tr><th>发行人</th><th>母公司货币资金</th><th>合并货币资金</th><th>母公司短债</th><th>母公司经营现金流</th><th>母公司投资收益现金</th></tr></thead><tbody>'+D.issuers.map(i=>`<tr><td>${names[i.issuer_id]}</td>${[['parent','monetary_funds'],['consolidated','monetary_funds'],['parent','short_term_interest_bearing_debt'],['parent','operating_cash_flow'],['parent','investment_income_cash']].map(([s,m])=>`<td>${format(value(i.issuer_id,s,m),'amount')}</td>`).join('')}</tr>`).join('')+'</tbody>';
  const diffs=D.reconciliation.filter(r=>r.scope===scope&&Number(r.delta_cny_1000)!==0);
  document.getElementById('reconciliation').innerHTML='<thead><tr><th>发行人 / 字段</th><th>旧值（亿元）</th><th>新值（亿元）</th><th>差额（亿元）</th><th>原文</th></tr></thead><tbody>'+diffs.map(r=>`<tr><td>${names[r.issuer_id]} / ${D.metric_labels[r.metric]}</td><td>${format(r.old_cny_1000,'amount')}</td><td>${format(r.new_cny_1000,'amount')}</td><td>${format(r.delta_cny_1000,'amount')}</td><td><a target="_blank" rel="noopener" href="${sources[r.old_source_id].url}#page=${r.old_pdf_page}">旧版</a> / <a target="_blank" rel="noopener" href="${sources[r.new_source_id].url}#page=${r.new_pdf_page}">新版</a></td></tr>`).join('')+(diffs.length?'':'<tr><td colspan="5">已核对字段未发现版本差额；不代表所有附注及债务定义均已一致。</td></tr>')+'</tbody>';
- renderIncome();renderFacts();renderDebt();
+ renderIncome();renderBridge();renderFacts();renderDebt();
 }
 function renderIncome(){
  const period=document.getElementById('period').value,vintage=document.getElementById('vintage').value;
@@ -7381,6 +7930,17 @@ function renderIncome(){
  document.getElementById('incomeEvidence').innerHTML='<thead><tr><th>母公司项目</th><th>金额（亿元）</th><th>计量口径</th><th>PDF / 印刷页</th><th>复核状态</th></tr></thead><tbody>'+rows.map(r=>`<tr><td>${escapeHtml(r.label)}</td><td>${(Number(r.value)*scales[r.unit]/100000).toFixed(2)}</td><td>${r.measurement_basis==='cash_flow'?'现金流量':'权责发生制收益'}</td><td><a target="_blank" rel="noopener" href="${sources[r.source_id].url}#page=${r.pdf_page}">${r.pdf_page} / ${r.report_page}</a></td><td>${r.measurement_basis==='cash_flow'?reviewLabels[D.facts.find(f=>f.issuer_id===r.issuer_id&&f.period_end===r.period_end&&f.scope===r.scope&&f.report_vintage===r.report_vintage&&f.metric==='investment_income_cash').review_status]+'（主事实）':reviewLabels[r.review_status]}</td></tr>`).join('')+(rows.length?'':'<tr><td colspan="5">当前期间／报告版本尚未录入收益构成。</td></tr>')+'</tbody>';
  const check=D.income_checks.find(r=>r.period_end===period&&r.report_vintage===vintage);
  document.getElementById('incomeGap').textContent=check?`现金收现86.20亿元，收益合计84.09亿元，相差${(Number(check.cash_minus_accounting_cny_1000)/100000).toFixed(4)}亿元。差额尚未归因，不认定为已验证的跨期到账或分红回流。`:'现金桥接资料待补。';
+}
+function renderBridge(){
+ const b=D.cash_bridge,period=document.getElementById('period').value,vintage=document.getElementById('vintage').value;
+ const active=b.period_end===period&&b.report_vintage===vintage;
+ const link=(page,label)=>`<a target="_blank" rel="noopener" href="${sources.HPI_2025_AR.url}#page=${page}">${label}</a>`;
+ const rows=[['成本法收益（宣告股利代理）','cost_method_income',link(367,'收益附注')],['加：联合营宣告分红','equity_method_dividends_declared',link(361,'表头')+' / '+link(363,'合计')],['加：应收股利期初余额','dividends_receivable_opening',link(348,'明细表')],['减：应收股利期末余额','dividends_receivable_closing',link(348,'明细表')],['条件性股利收现代理','conditional_dividend_receipts','计算值，非已验证到账'],['加：委托贷款收益（收现代理）','entrusted_loan_income',link(367,'收益附注')],['条件性投资收益收现合计','conditional_investment_receipts','上述假设下的计算值'],['实际投资收益收现','actual_investment_receipts',link(140,'现金流量表')],['未解释残差：实际减条件推算','actual_minus_conditional','负值表示推算高于实际']];
+ document.getElementById('cashBridge').innerHTML='<thead><tr><th>母公司项目 / 桥接步骤</th><th>金额（亿元）</th><th>证据及含义</th></tr></thead><tbody>'+(active?rows.map(([label,key,evidence])=>`<tr><td>${label}</td><td>${format(b.amounts[key],'amount')}</td><td>${evidence}</td></tr>`).join(''):'<tr><td colspan="3">当前期间／报告版本未建立收现桥接。</td></tr>')+'</tbody>';
+ document.getElementById('bridgeAssumptions').textContent=active?'假设：'+b.assumptions.join('；')+'。应收股利净减少不等于已验证的跨期到账，残差也不等于新增现金来源。':'仅建立2025年华能母公司案例，其他期间待补。';
+ document.getElementById('agedNotice').textContent=active?`已列重要超1年项目期末余额合计${format(b.amounts.important_aged_disclosed_closing,'amount')}亿元，占母公司期末应收股利${format(b.important_aged_disclosed_share,'percent')}。需要核查股利到账稳定性；未据此认定违约或减值。`:'账龄结构待补。';
+ const aged=D.dividend_receivables.filter(r=>r.table_kind==='important_over_one_year'&&r.period_end===period&&r.report_vintage===vintage);
+ document.getElementById('agedReceivables').innerHTML='<thead><tr><th>被投资单位</th><th>期初（亿元）</th><th>期末（亿元）</th><th>原文</th></tr></thead><tbody>'+aged.map(r=>`<tr><td>${escapeHtml(r.counterparty)}</td><td>${r.opening?(Number(r.opening)/100000000).toFixed(4):'原表空白'}</td><td>${r.closing?(Number(r.closing)/100000000).toFixed(4):'原表空白'}</td><td>${link(r.pdf_page,r.pdf_page+' / '+r.report_page)}</td></tr>`).join('')+'</tbody>';
 }
 function renderFacts(){
  const period=document.getElementById('period').value,issuer=document.getElementById('issuer').value,q=document.getElementById('search').value.toLowerCase();

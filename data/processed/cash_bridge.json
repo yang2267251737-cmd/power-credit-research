@@ -1,0 +1,34 @@
+{
+  "issuer_id": "HPI",
+  "period_end": "2025-12-31",
+  "scope": "parent",
+  "report_vintage": "2025",
+  "unit": "CNY_1000",
+  "amounts": {
+    "cost_method_income": "7263308.745",
+    "equity_method_dividends_declared": "465072.744",
+    "dividends_receivable_opening": "1130632.001",
+    "dividends_receivable_closing": "488613.517",
+    "receivables_decrease": "642018.484",
+    "conditional_dividend_receipts": "8370399.973",
+    "entrusted_loan_income": "291539.948",
+    "conditional_investment_receipts": "8661939.921",
+    "actual_investment_receipts": "8620066.795",
+    "actual_minus_conditional": "-41873.126",
+    "important_aged_disclosed_closing": "238722.697"
+  },
+  "important_aged_disclosed_share": "0.4885716188649770816716885874",
+  "status": "partial_unreconciled",
+  "interpretation": "conditional_scenario_only",
+  "assumptions": [
+    "成本法收益暂作本期宣告股利代理，完整被投资单位及股利来源尚未桥接",
+    "应收股利总额暂假设仅由宣告与收现变动，未排除合并范围、外币、抵销或其他非现金影响",
+    "委托贷款收益暂作利息收现代理，未核实实际到账及应收利息变动"
+  ],
+  "limitations": [
+    "联合营宣告分红不等于实际到账；没有以权益法利润份额代替分红",
+    "应收股利净减少不等于已确认的跨期现金收回金额",
+    "原表空白保留；重要超1年项目的已列金额不代表全部超1年应收股利",
+    "即使残差为零，也不能仅凭数值吻合把假设标为已验证现金来源"
+  ]
+}

@@ -2,6 +2,7 @@ import copy
 import unittest
 from decimal import Decimal
 from power_credit.model import normalize, derive, stress
+from power_credit.cash_bridge import derive_cash_bridge
 from power_credit.build import ROOT, read_csv, validate, reconcile_versions, validate_debt_breakdown, validate_income_evidence, validate_review_log
 
 class FinancialTests(unittest.TestCase):
@@ -124,6 +125,38 @@ class EvidenceTests(unittest.TestCase):
         fact['value']='999999999999'
         with self.assertRaisesRegex(ValueError,'Inconsistent balances'):
             validate(self.issuers,self.sources,facts)
+
+class CashBridgeTests(unittest.TestCase):
+    def setUp(self):
+        self.inputs=read_csv(ROOT/'data/cash_bridge_inputs.csv')
+        self.receivables=read_csv(ROOT/'data/dividend_receivables.csv')
+        self.income=read_csv(ROOT/'data/investment_income_evidence.csv')
+        self.sources=read_csv(ROOT/'data/sources.csv')
+
+    def test_dividend_declarations_replace_equity_profit_in_conditional_bridge(self):
+        result=derive_cash_bridge(self.inputs,self.receivables,self.income,self.sources)
+        self.assertEqual(Decimal(result['amounts']['conditional_investment_receipts']),Decimal('8661939.921'))
+        self.assertEqual(Decimal(result['amounts']['actual_minus_conditional']),Decimal('-41873.126'))
+        self.assertEqual(Decimal(result['amounts']['important_aged_disclosed_closing']),Decimal('238722.697'))
+        self.assertEqual(result['status'],'partial_unreconciled')
+        self.assertTrue(any(not r['closing'] for r in self.receivables))
+
+    def test_profit_cannot_be_relabelled_as_dividend_declaration(self):
+        self.inputs[2]['measurement_basis']='accounting_income'
+        with self.assertRaisesRegex(ValueError,'basis/value mismatch'):
+            derive_cash_bridge(self.inputs,self.receivables,self.income,self.sources)
+        self.inputs[2]['measurement_basis']='declared_distribution'
+        self.receivables[0]['closing']='1'
+        with self.assertRaisesRegex(ValueError,'detail/total/input mismatch'):
+            derive_cash_bridge(self.inputs,self.receivables,self.income,self.sources)
+
+    def test_zero_residual_does_not_validate_unverified_cash_assumptions(self):
+        row=next(r for r in self.income if r['component']=='investment_income_cash')
+        row['value']='8661939921'
+        result=derive_cash_bridge(self.inputs,self.receivables,self.income,self.sources)
+        self.assertEqual(Decimal(result['amounts']['actual_minus_conditional']),Decimal(0))
+        self.assertEqual(result['status'],'partial_unreconciled')
+        self.assertEqual(result['interpretation'],'conditional_scenario_only')
 
 if __name__=='__main__':
     unittest.main()
